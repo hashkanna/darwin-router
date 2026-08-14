@@ -8,11 +8,14 @@ import json
 import random
 import sys
 
-from router import config
+import httpx
+
+from router import config, judge
 from router.judge import (JUDGE_SYSTEM, JUDGE_USER, RESP_TRUNC, _chat,
                           _content, _judge_backend, _parse_verdict)
 
 CONCURRENCY = 4
+judge.http_client = httpx.AsyncClient(timeout=300)  # hard prompts think long
 
 
 async def audit_one(item: dict, sem: asyncio.Semaphore) -> dict:
@@ -60,7 +63,14 @@ async def main():
     with open(in_path) as f:
         holdout = [json.loads(l) for l in f if l.strip()]
     sem = asyncio.Semaphore(CONCURRENCY)
-    results = await asyncio.gather(*(audit_one(i, sem) for i in holdout))
+    results = await asyncio.gather(*(audit_one(i, sem) for i in holdout),
+                                   return_exceptions=True)
+    results = [
+        r if isinstance(r, dict) else
+        {"text": i["text"], "hand_label": i["label"], "adequacy_label": "ERROR",
+         "clear": False, "cheap_score": 0, "exp_score": 0, "why": str(r)[:80]}
+        for i, r in zip(holdout, results)
+    ]
 
     with open(out_path, "w") as f:
         for r in results:
