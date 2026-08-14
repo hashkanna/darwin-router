@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Darwin Router</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+  :root {
+    --bg: #0b0e14; --panel: #131722; --line: #232a3b;
+    --text: #e6e9f0; --muted: #8b93a7;
+    --green: #34d399; --red: #f87171; --blue: #60a5fa; --amber: #fbbf24; --violet: #a78bfa;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--bg); color: var(--text); font: 14px/1.5 -apple-system, "Segoe UI", sans-serif; padding: 20px; }
+  header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 18px; }
+  h1 { font-size: 22px; letter-spacing: -0.02em; }
+  h1 span { color: var(--green); }
+  .sub { color: var(--muted); font-size: 13px; }
+  .cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 16px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+  .card .k { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .card .v { font-size: 26px; font-weight: 700; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .card .d { color: var(--muted); font-size: 12px; }
+  .grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 12px; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  .panel h2 { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+  .chart-wrap { height: 220px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; color: var(--muted); font-weight: 500; padding: 4px 8px; border-bottom: 1px solid var(--line); }
+  td { padding: 5px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td.q { max-width: 340px; overflow: hidden; text-overflow: ellipsis; }
+  .chip { padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .chip.simple    { background: #0e3a2b; color: var(--green); }
+  .chip.reasoning { background: #12294d; color: var(--blue); }
+  .chip.vision    { background: #3b2a4d; color: var(--violet); }
+  .chip.imagegen, .chip.videogen { background: #4d3a12; color: var(--amber); }
+  .judge-item { padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .judge-item .q { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tag { font-weight: 700; }
+  .tag.inserted { color: var(--green); }
+  .tag.skipped { color: var(--muted); }
+  .muted { color: var(--muted); }
+  .footer { margin-top: 14px; color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Darwin Router <span>&#9679; live</span></h1>
+  <div class="sub">self-improving semantic router &mdash; SIE embeddings + kNN, Alibaba Cloud offload &mdash; costs are estimates</div>
+</header>
+
+<div class="cards">
+  <div class="card"><div class="k">Requests</div><div class="v" id="c-req">&ndash;</div><div class="d" id="c-routes"></div></div>
+  <div class="card"><div class="k">Holdout accuracy</div><div class="v" id="c-acc">&ndash;</div><div class="d">immutable 40-query eval</div></div>
+  <div class="card"><div class="k">Total cost</div><div class="v" id="c-cost">&ndash;</div><div class="d" id="c-cf"></div></div>
+  <div class="card"><div class="k">Saved vs all-qwen-max</div><div class="v" id="c-saved">&ndash;</div><div class="d">counterfactual delta</div></div>
+  <div class="card"><div class="k">Exemplars</div><div class="v" id="c-ex">&ndash;</div><div class="d" id="c-judge"></div></div>
+</div>
+
+<div class="grid">
+  <div class="panel">
+    <h2>Accuracy over time (holdout replay) &amp; index growth</h2>
+    <div class="chart-wrap"><canvas id="accChart"></canvas></div>
+  </div>
+  <div class="panel">
+    <h2>Cumulative cost vs all-qwen-max counterfactual</h2>
+    <div class="chart-wrap"><canvas id="costChart"></canvas></div>
+  </div>
+  <div class="panel">
+    <h2>Live request feed</h2>
+    <table>
+      <thead><tr><th>time</th><th>query</th><th>route</th><th>margin</th><th>ms</th><th>cost</th></tr></thead>
+      <tbody id="feed"></tbody>
+    </table>
+  </div>
+  <div class="panel">
+    <h2>Darwin loop &mdash; judge events</h2>
+    <div id="judge-feed"><div class="muted">no judge events yet</div></div>
+  </div>
+</div>
+<div class="footer">polls /stats every 2s &mdash; Superlinked &times; Qwen hackathon, 14 Aug 2026</div>
+
+<script>
+Chart.defaults.color = "#8b93a7";
+Chart.defaults.borderColor = "#232a3b";
+Chart.defaults.font.size = 11;
+
+const accChart = new Chart(document.getElementById("accChart"), {
+  type: "line",
+  data: { labels: [], datasets: [
+    { label: "accuracy", data: [], borderColor: "#34d399", backgroundColor: "#34d39922",
+      fill: true, tension: 0.25, yAxisID: "y", pointRadius: 3 },
+    { label: "exemplars", data: [], borderColor: "#a78bfa", borderDash: [5, 4],
+      tension: 0.25, yAxisID: "y1", pointRadius: 0 },
+  ]},
+  options: { maintainAspectRatio: false, animation: false, scales: {
+    y: { min: 0.5, max: 1.0, ticks: { format: { style: "percent" } } },
+    y1: { position: "right", grid: { display: false }, beginAtZero: true },
+  }},
+});
+
+const costChart = new Chart(document.getElementById("costChart"), {
+  type: "line",
+  data: { labels: [], datasets: [
+    { label: "all-qwen-max (counterfactual)", data: [], borderColor: "#f87171",
+      borderDash: [5, 4], tension: 0.15, pointRadius: 0 },
+    { label: "darwin", data: [], borderColor: "#34d399", backgroundColor: "#34d39922",
+      fill: true, tension: 0.15, pointRadius: 0 },
+  ]},
+  options: { maintainAspectRatio: false, animation: false,
+    scales: { y: { beginAtZero: true, ticks: { callback: v => "$" + v.toFixed(3) } } } },
+});
+
+const fmt$ = v => v >= 0.1 ? "$" + v.toFixed(2) : "$" + v.toFixed(4);
+
+async function tick() {
+  let s;
+  try { s = await (await fetch("/stats")).json(); } catch { return; }
+
+  document.getElementById("c-req").textContent = s.requests;
+  document.getElementById("c-routes").textContent =
+    Object.entries(s.by_route).map(([k, v]) => `${k} ${v}`).join(" · ");
+  const acc = s.replay.at(-1);
+  document.getElementById("c-acc").textContent = acc ? (acc.accuracy * 100).toFixed(1) + "%" : "–";
+  document.getElementById("c-cost").textContent = fmt$(s.total_cost);
+  document.getElementById("c-cf").textContent = "vs " + fmt$(s.total_counterfactual_cost) + " counterfactual";
+  const saved = s.total_counterfactual_cost - s.total_cost;
+  document.getElementById("c-saved").textContent =
+    (s.total_counterfactual_cost > 0 ? Math.round(100 * saved / s.total_counterfactual_cost) : 0) + "%";
+  document.getElementById("c-ex").textContent = s.exemplars.total;
+  document.getElementById("c-judge").textContent =
+    `${s.exemplars.judge_added} learned · ${s.judge.events} judged`;
+
+  accChart.data.labels = s.replay.map(p => p.ts.slice(11, 16));
+  accChart.data.datasets[0].data = s.replay.map(p => p.accuracy);
+  accChart.data.datasets[1].data = s.replay.map(p => p.exemplars);
+  accChart.update();
+
+  costChart.data.labels = s.cost_curve.map((_, i) => i + 1);
+  costChart.data.datasets[0].data = s.cost_curve.map(p => p.counterfactual);
+  costChart.data.datasets[1].data = s.cost_curve.map(p => p.cost);
+  costChart.update();
+
+  document.getElementById("feed").innerHTML = s.recent.slice().reverse().map(e => `
+    <tr>
+      <td class="muted">${e.ts.slice(11, 19)}</td>
+      <td class="q" title="${(e.query_preview || "").replace(/"/g, "&quot;")}">${e.query_preview || ""}</td>
+      <td><span class="chip ${e.route}">${e.route}</span></td>
+      <td>${e.margin == null ? "–" : e.margin.toFixed(2)}</td>
+      <td>${e.latency_ms}</td>
+      <td>${fmt$(e.cost)}</td>
+    </tr>`).join("");
+
+  const j = s.judge.recent.slice().reverse();
+  document.getElementById("judge-feed").innerHTML = j.length ? j.map(e => `
+    <div class="judge-item">
+      <span class="muted">${e.ts.slice(11, 19)}</span>
+      routed <span class="chip ${e.routed}">${e.routed}</span> &rarr;
+      judge says <b>${e.correct ?? "?"}</b>
+      <span class="tag ${e.inserted ? "inserted" : "skipped"}">${e.inserted ? "+1 exemplar" : (e.why || "")}</span>
+      <div class="q">${e.query_preview || ""} ${e.judge_why ? "&mdash; &ldquo;" + e.judge_why + "&rdquo;" : ""}</div>
+    </div>`).join("") : '<div class="muted">no judge events yet</div>';
+}
+
+tick();
+setInterval(tick, 2000);
+</script>
+</body>
+</html>
