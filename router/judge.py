@@ -26,7 +26,11 @@ JUDGE_SYSTEM = (
 )
 JUDGE_USER = (
     "Query: {q}\nResponse A: {resp_a}\nResponse B: {resp_b}\n"
-    "Score each 1-5 on correctness and completeness. Reply strict JSON: "
+    "First, solve the query yourself in brief. Then check each response "
+    "against your solution for concrete errors (wrong numbers, invalid steps, "
+    "missed constraints, unstated failure cases). A response with any material "
+    "error scores at most 2. Only then score each 1-5 on correctness and "
+    "completeness. Reply strict JSON on the last line: "
     '{{"a": int, "b": int, "verdict": "a"|"b"|"tie", "why": "<15 words"}}'
 )
 
@@ -63,11 +67,11 @@ async def _chat(base_url: str, api_key: str, model: str, messages: list) -> dict
 
 
 def _parse_verdict(raw: str) -> dict:
-    raw = raw.strip()
-    if raw.startswith("```"):
-        raw = raw.split("```")[1]
-        raw = raw.removeprefix("json").strip()
-    return json.loads(raw)
+    # verification-first prompt puts reasoning before the JSON: take last {...}
+    start, end = raw.rfind("{"), raw.rfind("}")
+    if start == -1 or end <= start:
+        raise ValueError(f"no JSON in verdict: {raw[-120:]}")
+    return json.loads(raw[start : end + 1])
 
 
 def _log(entry: dict):
