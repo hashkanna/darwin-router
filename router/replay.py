@@ -19,7 +19,7 @@ from router import config
 from router.index import get_index
 
 BASE = "http://127.0.0.1:8787"
-INTERVAL_S = 1800
+INTERVAL_S = 600
 
 
 def load_holdout() -> list[dict]:

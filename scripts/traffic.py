@@ -11,7 +11,7 @@ import time
 import httpx
 
 BASE = "http://127.0.0.1:8787"
-INTERVAL_RANGE = (20, 70)  # seconds between requests
+INTERVAL_RANGE = (8, 25)  # seconds between requests
 IMAGE_SHARE = 0.03
 
 SIMPLE = [
