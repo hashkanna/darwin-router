@@ -102,6 +102,18 @@ class ExemplarIndex:
             q = _norm(np.array(embedding, dtype=np.float32))
             return float((self.vecs[mask] @ q).max())
 
+    def max_conflicting_sim(self, embedding: list[float], keep_label: str) -> float:
+        """Highest cosine among judge-sourced exemplars of a DIFFERENT label."""
+        with self.lock:
+            if self.vecs is None:
+                return 0.0
+            mask = np.array([m["label"] != keep_label and m["source"] == "judge"
+                             for m in self.meta])
+            if not mask.any():
+                return 0.0
+            q = _norm(np.array(embedding, dtype=np.float32))
+            return float((self.vecs[mask] @ q).max())
+
     def remove_conflicting(self, embedding: list[float], keep_label: str,
                            threshold: float) -> int:
         """Drop judge-sourced exemplars that near-duplicate this embedding but

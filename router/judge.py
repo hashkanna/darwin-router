@@ -137,10 +137,15 @@ async def run_judge(body: dict, text: str, embedding: list[float], routed: str,
         if index.count(label=correct, source="judge") >= CAP_PER_ROUTE:
             entry["why"] = "cap reached"
             return
-        # verdict flip on a repeated query: replace the old judge exemplar
-        flipped = index.remove_conflicting(embedding, correct, DEDUP_COS)
-        if flipped:
-            entry["flipped"] = flipped
+        # verdict flip on a repeated query: overturning an existing exemplar
+        # demands DECISIVE evidence (gap >= 3), else the old verdict stands —
+        # a lucky cheap-model run must not erase a decisive failure
+        if index.max_conflicting_sim(embedding, correct) >= DEDUP_COS:
+            gap = (exp_score - cheap_score) if correct == "reasoning" else (cheap_score - exp_score)
+            if gap < 3:
+                entry["why"] = "flip rejected (verdict not decisive)"
+                return
+            entry["flipped"] = index.remove_conflicting(embedding, correct, DEDUP_COS)
         if index.max_sim(embedding, correct) >= DEDUP_COS:
             entry["why"] = "near-duplicate"
             return
