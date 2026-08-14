@@ -137,6 +137,10 @@ async def run_judge(body: dict, text: str, embedding: list[float], routed: str,
         if index.count(label=correct, source="judge") >= CAP_PER_ROUTE:
             entry["why"] = "cap reached"
             return
+        # verdict flip on a repeated query: replace the old judge exemplar
+        flipped = index.remove_conflicting(embedding, correct, DEDUP_COS)
+        if flipped:
+            entry["flipped"] = flipped
         if index.max_sim(embedding, correct) >= DEDUP_COS:
             entry["why"] = "near-duplicate"
             return

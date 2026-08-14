@@ -102,6 +102,32 @@ class ExemplarIndex:
             q = _norm(np.array(embedding, dtype=np.float32))
             return float((self.vecs[mask] @ q).max())
 
+    def remove_conflicting(self, embedding: list[float], keep_label: str,
+                           threshold: float) -> int:
+        """Drop judge-sourced exemplars that near-duplicate this embedding but
+        carry a DIFFERENT label (verdict flip on a repeated query): latest
+        clear verdict wins. Bootstrap exemplars are never touched."""
+        with self.lock:
+            if self.vecs is None:
+                return 0
+            q = _norm(np.array(embedding, dtype=np.float32))
+            sims = self.vecs @ q
+            drop = {
+                i for i, (m, s) in enumerate(zip(self.meta, sims))
+                if s >= threshold and m["label"] != keep_label and m["source"] == "judge"
+            }
+            if not drop:
+                return 0
+            keep = [i for i in range(len(self.meta)) if i not in drop]
+            self.meta = [self.meta[i] for i in keep]
+            self.vecs = self.vecs[keep] if keep else None
+            # persist: normalized vectors are fine, cosine is norm-invariant
+            self._rewrite([
+                {**m, "embedding": self.vecs[i].tolist()}
+                for i, m in enumerate(self.meta)
+            ])
+            return len(drop)
+
     def count(self, label: str | None = None, source: str | None = None) -> int:
         with self.lock:
             return sum(
