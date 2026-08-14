@@ -74,6 +74,23 @@ REASONING = [
     "Estimate the bandwidth needed to stream security footage from 400 stores, stating your assumptions.",
 ]
 
+# genuinely frontier-worthy: families empirically verified to break the 4B
+# (stateful sims with twists, symbol manipulation, python semantics traps) —
+# siblings of the hard holdout items, never the same content
+HARD = [
+    "Take the string SUPERLINKED. Rotate it right by 2, delete letters at positions divisible by 3 (1-indexed), then shift each remaining letter back by one (A wraps to Z). Show every step.",
+    "Predict the exact output: x = {'a': 1}\ndef f(d=x):\n    d['b'] = len(d)\n    return d\nprint(f() is f())\nprint(f())\nx['c'] = 9\nprint(f())",
+    "A tank fills via pump P in 4 hours, but P drops to one third of its rate whenever the tank is more than two-thirds full. Drain D empties a full tank in 12 hours. Starting empty with both running, when is the tank full?",
+    "A farmer must ferry a fox, a chicken, and a sack of grain. In this version the FOX eats the GRAIN if left alone with it, and nothing else conflicts. Boat holds farmer plus one. Minimum crossings and the sequence?",
+    "A dog runs at 12 km/h between two hikers walking toward each other at 4 and 5 km/h, starting 18 km apart, but the dog pauses 3 minutes at each hiker before turning. How far does the dog RUN before the hikers meet?",
+    "Take ROUTERBRAIN: swap the first and second halves, delete all vowels, then reverse the result. What string remains? Step by step.",
+    "Predict the output and explain via the MRO: class P: v = 'p'\nclass Q(P): pass\nclass R(P): v = 'r'\nclass S(Q, R): pass\nprint(S.v)\nQ.v = 'q'\nprint(S.v)\ndel Q.v\nprint(S.v)",
+    "Without running it, what does this print? nums = [10, 20, 30]\ngen = (n + 1 for n in nums)\nnums.remove(20)\nprint(list(gen))\nfns = [lambda m=n: m for n in nums]\nprint([f() for f in fns])\nprint([f() for f in [lambda: n for n in nums]])",
+    "A knockout tournament starts with 27 players; odd rounds give one bye. But every bye recipient must play a tie-break exhibition match that counts toward the match total. Total matches including exhibitions, and total byes? Trace it.",
+    "An elevator starts at floor 5 of a 10-floor building and executes: up 3, down 6, up 4, down 2, up 5 — but any move that would pass floor 1 or floor 10 stops AT that limit instead. Which floor does it end on, and how many floors did it actually travel in total?",
+]
+
+
 # deliberately mid-difficulty: these should tickle the judge gate
 BOUNDARY = [
     "what's 15% tip on an $84 dinner for four, split evenly?",
@@ -101,10 +118,12 @@ def pick() -> str:
     r = random.random()
     if r < IMAGE_SHARE:
         return random.choice(IMAGEGEN)
-    if r < 0.45:
+    if r < 0.43:
         return random.choice(SIMPLE)
-    if r < 0.80:
+    if r < 0.68:
         return random.choice(REASONING)
+    if r < 0.90:
+        return random.choice(HARD)
     return random.choice(BOUNDARY)
 
 
