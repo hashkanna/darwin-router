@@ -17,7 +17,8 @@ MARGIN_GATE = 0.7
 SAMPLE_RATE = 0.10
 DEDUP_COS = 0.95
 CAP_PER_ROUTE = 40
-RESP_TRUNC = 2000  # chars of each response shown to the judge
+RESP_TRUNC = 6000  # chars of each response shown to the judge; too low biases
+                   # the judge toward the cheap model (long answers get cut)
 
 JUDGE_SYSTEM = (
     "You compare two model responses to the same query. One is from a cheap "
