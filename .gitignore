@@ -3,4 +3,5 @@
 __pycache__/
 data/*
 !data/holdout.jsonl
+!data/holdout_v1.jsonl
 Alibaba-hackathon-apikey.csv

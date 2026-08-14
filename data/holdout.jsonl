@@ -18,23 +18,23 @@
 {"text": "what timezone is Tokyo in?", "label": "simple"}
 {"text": "make this sentence shorter without losing meaning: I am writing to you today in order to ask whether it might be possible for you to send me the file at your earliest convenience.", "label": "simple"}
 {"text": "list three primary colors", "label": "simple"}
-{"text": "If a train leaves at 3pm going 80 km/h and another leaves the same station at 4pm going 100 km/h in the same direction, at what time does the second train catch up?", "label": "reasoning"}
-{"text": "Write a Python function that finds the longest palindromic substring and explain its time complexity.", "label": "reasoning"}
-{"text": "Debug this: my recursive fibonacci returns wrong values for small n. def fib(n): return n if n <= 2 else fib(n-1) + fib(n-2)", "label": "reasoning"}
-{"text": "Plan a 3-day Kyoto itinerary that minimizes transit time between temples and includes a daily budget breakdown.", "label": "reasoning"}
-{"text": "Prove that the square root of 2 is irrational.", "label": "reasoning"}
-{"text": "Design a database schema for a library lending system that supports holds, fines, and multiple branches.", "label": "reasoning"}
-{"text": "What is 17% of 2,340, and what does that amount grow to compounded annually at 4% for 6 years?", "label": "reasoning"}
-{"text": "Explain step by step why the sky is blue but sunsets are red, including the underlying physics.", "label": "reasoning"}
-{"text": "I have 3 red, 4 blue, and 5 green balls in a bag. What's the probability of drawing two balls of the same color without replacement? Show your work.", "label": "reasoning"}
-{"text": "Compare Rust and Go for building a high-throughput network proxy and recommend one with justification.", "label": "reasoning"}
-{"text": "Write a regex that matches ISO-8601 timestamps but rejects invalid months, and walk through how each part works.", "label": "reasoning"}
-{"text": "My startup has $40k MRR growing 8% monthly and a $95k monthly burn. When do we reach profitability, and what's our runway with $600k in the bank?", "label": "reasoning"}
-{"text": "Implement Dijkstra's algorithm in Python using a min-heap and trace it on a small example graph.", "label": "reasoning"}
-{"text": "Why does 0.1 + 0.2 == 0.3 evaluate to False in most programming languages, and how should currency amounts be handled instead?", "label": "reasoning"}
-{"text": "Outline a migration plan from a monolith to microservices for a payments system, sequencing the steps by risk.", "label": "reasoning"}
-{"text": "Solve for x: 3^(2x+1) = 81. Show each step.", "label": "reasoning"}
-{"text": "Estimate how many piano tuners there are in Chicago, showing your full reasoning chain.", "label": "reasoning"}
-{"text": "Derive the minimal boolean expression for a circuit whose output is true only when exactly two of its three inputs are true.", "label": "reasoning"}
-{"text": "A farmer must cross a river with a wolf, a goat, and a cabbage, but the boat holds only one item at a time. Give the step-by-step solution and explain why it is minimal.", "label": "reasoning"}
-{"text": "Refactor this ORM query pattern to avoid N+1 queries and explain the tradeoffs: for user in users: print(user.orders.count())", "label": "reasoning"}
+{"text": "If a train leaves at 3pm going 80 km/h and another leaves the same station at 4pm going 100 km/h in the same direction, at what time does the second train catch up?", "label": "simple"}
+{"text": "Prove that the square root of 2 is irrational.", "label": "simple"}
+{"text": "What is 17% of 2,340, and what does that amount grow to compounded annually at 4% for 6 years?", "label": "simple"}
+{"text": "Explain step by step why the sky is blue but sunsets are red, including the underlying physics.", "label": "simple"}
+{"text": "I have 3 red, 4 blue, and 5 green balls in a bag. What's the probability of drawing two balls of the same color without replacement? Show your work.", "label": "simple"}
+{"text": "Compare Rust and Go for building a high-throughput network proxy and recommend one with justification.", "label": "simple"}
+{"text": "My startup has $40k MRR growing 8% monthly and a $95k monthly burn. When do we reach profitability, and what's our runway with $600k in the bank?", "label": "simple"}
+{"text": "Implement Dijkstra's algorithm in Python using a min-heap and trace it on a small example graph.", "label": "simple"}
+{"text": "Outline a migration plan from a monolith to microservices for a payments system, sequencing the steps by risk.", "label": "simple"}
+{"text": "Solve for x: 3^(2x+1) = 81. Show each step.", "label": "simple"}
+{"text": "Estimate how many piano tuners there are in Chicago, showing your full reasoning chain.", "label": "simple"}
+{"text": "A farmer must cross a river with a wolf, a goat, and a cabbage, but the boat holds only one item at a time. Give the step-by-step solution and explain why it is minimal.", "label": "simple"}
+{"text": "A farmer must ferry a wolf, a goat, and a cabbage across a river. In this version the WOLF eats the CABBAGE if left alone together, but the goat is harmless and can be left with anything. The boat holds the farmer plus one item. What is the minimum number of crossings, and what is the sequence?", "label": "reasoning"}
+{"text": "Pump A alone fills a pool in 6 hours at a constant rate, but a safety valve halves A's rate whenever the pool is more than half full. Drain B alone empties a full pool in 9 hours. The pool starts one-third full and both run together. How long until the pool is full? Careful with the piecewise rates.", "label": "reasoning"}
+{"text": "Without running it, determine the exact output of this Python and list every bug: funcs = []\nfor i in range(3):\n    def f(x=[]):\n        x.append(i)\n        return x\n    funcs.append(f)\nprint(funcs[0]() is funcs[1]())\nprint(funcs[0]())\nprint(funcs[2]())", "label": "reasoning"}
+{"text": "Take the word CHAMPIONSHIP. Delete every letter whose position in the word (1-indexed) is a prime number, then reverse what remains, then swap every adjacent pair of letters (1st with 2nd, 3rd with 4th, and so on; a final unpaired letter stays). What string results? Work through it position by position.", "label": "reasoning"}
+{"text": "Two trains 100 km apart drive toward each other at 40 km/h and 60 km/h. A fly starts on the first train and flies back and forth between them at 150 km/h, but each time it touches a train it rests on it for exactly 6 minutes (moving with that train) before flying again. How far does the fly FLY (not ride) before the trains meet? Simulate the touches.", "label": "reasoning"}
+{"text": "Take the string DARWINROUTER. Rotate it left by 3 positions, then delete the letters at even positions (1-indexed), then replace each remaining letter with the next letter of the alphabet (Z wraps to A). What is the final string? Show every intermediate step.", "label": "reasoning"}
+{"text": "Without running it, give the exact printed output and explain each trap: x = [1, 2, 3]\ng = (i * 2 for i in x)\nx.append(4)\nprint(list(g))\nprint(list(g))\nfuncs = [lambda: i for i in range(3)]\nprint([f() for f in funcs])", "label": "reasoning"}
+{"text": "Predict the exact output and explain via the MRO: class A: x = 1\nclass B(A): pass\nclass C(A): x = 3\nclass D(B, C): pass\nprint(D.x)\nB.x = 9\nprint(D.x)\nA.x = 7\nprint(D().x)", "label": "reasoning"}

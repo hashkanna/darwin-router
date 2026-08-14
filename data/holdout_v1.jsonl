@@ -1,0 +1,40 @@
+{"text": "hi there!", "label": "simple"}
+{"text": "what's the capital of Japan?", "label": "simple"}
+{"text": "convert this to uppercase: hello world", "label": "simple"}
+{"text": "thanks so much for your help yesterday, really appreciated it", "label": "simple"}
+{"text": "what does HTTP stand for?", "label": "simple"}
+{"text": "give me a synonym for 'happy'", "label": "simple"}
+{"text": "format this as a bullet list: apples, bananas, cherries", "label": "simple"}
+{"text": "how do you say 'good morning' in Spanish?", "label": "simple"}
+{"text": "what year did the Berlin Wall fall?", "label": "simple"}
+{"text": "extract the email address from this text: contact John at john.doe@acme.com for further details", "label": "simple"}
+{"text": "reword this to sound more polite: send me the report now", "label": "simple"}
+{"text": "is a tomato a fruit or a vegetable?", "label": "simple"}
+{"text": "good morning! ready to start the day?", "label": "simple"}
+{"text": "how do you spell 'necessary'?", "label": "simple"}
+{"text": "turn '2026-08-14' into a human-readable date", "label": "simple"}
+{"text": "who wrote Pride and Prejudice?", "label": "simple"}
+{"text": "summarize this in one sentence: The meeting was moved from Tuesday to Thursday because the client had a scheduling conflict and the room was double-booked.", "label": "simple"}
+{"text": "what timezone is Tokyo in?", "label": "simple"}
+{"text": "make this sentence shorter without losing meaning: I am writing to you today in order to ask whether it might be possible for you to send me the file at your earliest convenience.", "label": "simple"}
+{"text": "list three primary colors", "label": "simple"}
+{"text": "If a train leaves at 3pm going 80 km/h and another leaves the same station at 4pm going 100 km/h in the same direction, at what time does the second train catch up?", "label": "reasoning"}
+{"text": "Write a Python function that finds the longest palindromic substring and explain its time complexity.", "label": "reasoning"}
+{"text": "Debug this: my recursive fibonacci returns wrong values for small n. def fib(n): return n if n <= 2 else fib(n-1) + fib(n-2)", "label": "reasoning"}
+{"text": "Plan a 3-day Kyoto itinerary that minimizes transit time between temples and includes a daily budget breakdown.", "label": "reasoning"}
+{"text": "Prove that the square root of 2 is irrational.", "label": "reasoning"}
+{"text": "Design a database schema for a library lending system that supports holds, fines, and multiple branches.", "label": "reasoning"}
+{"text": "What is 17% of 2,340, and what does that amount grow to compounded annually at 4% for 6 years?", "label": "reasoning"}
+{"text": "Explain step by step why the sky is blue but sunsets are red, including the underlying physics.", "label": "reasoning"}
+{"text": "I have 3 red, 4 blue, and 5 green balls in a bag. What's the probability of drawing two balls of the same color without replacement? Show your work.", "label": "reasoning"}
+{"text": "Compare Rust and Go for building a high-throughput network proxy and recommend one with justification.", "label": "reasoning"}
+{"text": "Write a regex that matches ISO-8601 timestamps but rejects invalid months, and walk through how each part works.", "label": "reasoning"}
+{"text": "My startup has $40k MRR growing 8% monthly and a $95k monthly burn. When do we reach profitability, and what's our runway with $600k in the bank?", "label": "reasoning"}
+{"text": "Implement Dijkstra's algorithm in Python using a min-heap and trace it on a small example graph.", "label": "reasoning"}
+{"text": "Why does 0.1 + 0.2 == 0.3 evaluate to False in most programming languages, and how should currency amounts be handled instead?", "label": "reasoning"}
+{"text": "Outline a migration plan from a monolith to microservices for a payments system, sequencing the steps by risk.", "label": "reasoning"}
+{"text": "Solve for x: 3^(2x+1) = 81. Show each step.", "label": "reasoning"}
+{"text": "Estimate how many piano tuners there are in Chicago, showing your full reasoning chain.", "label": "reasoning"}
+{"text": "Derive the minimal boolean expression for a circuit whose output is true only when exactly two of its three inputs are true.", "label": "reasoning"}
+{"text": "A farmer must cross a river with a wolf, a goat, and a cabbage, but the boat holds only one item at a time. Give the step-by-step solution and explain why it is minimal.", "label": "reasoning"}
+{"text": "Refactor this ORM query pattern to avoid N+1 queries and explain the tradeoffs: for user in users: print(user.orders.count())", "label": "reasoning"}
