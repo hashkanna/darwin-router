@@ -72,17 +72,26 @@ REASONING = [
     "Write a shell one-liner to find the 10 largest files under a directory, then explain each flag.",
     "How would you migrate a live Postgres table from int to bigint primary keys without locking writes?",
     "Estimate the bandwidth needed to stream security footage from 400 stores, stating your assumptions.",
+    "What is 23% of 4,180, and what does that amount become compounded annually at 3.5% for 8 years? Show the math.",
+    "Our SaaS has $62k MRR growing 6% monthly against a $110k monthly burn. Which month do we hit profitability, and how much runway does $850k give us?",
+    "Implement A* search in Python with a priority queue and trace it on a tiny grid example.",
+    "Write BFS shortest-path in Python using a deque and walk through it on a small graph.",
+    "Plan the phased decomposition of a monolithic inventory system into services, ordered by risk.",
+    "Sketch a stepwise strategy to split a legacy billing monolith into microservices with rollback points.",
 ]
 
 # genuinely frontier-worthy: families empirically verified to break the 4B
 # (stateful sims with twists, symbol manipulation, python semantics traps) —
 # siblings of the hard holdout items, never the same content
 HARD = [
-    "Take the string SUPERLINKED. Rotate it right by 2, delete letters at positions divisible by 3 (1-indexed), then shift each remaining letter back by one (A wraps to Z). Show every step.",
+    "Take the string QWENHACKATHON. Rotate it left by 4 positions, delete the letters at odd positions (1-indexed), then replace each remaining letter with the next letter of the alphabet (Z wraps to A). Show every intermediate step.",
+    "Take the word EVOLUTIONARY. Delete every letter at a position that is a perfect square (1-indexed), reverse the remainder, then swap adjacent pairs (last unpaired letter stays). What results? Track positions carefully.",
     "Predict the exact output: x = {'a': 1}\ndef f(d=x):\n    d['b'] = len(d)\n    return d\nprint(f() is f())\nprint(f())\nx['c'] = 9\nprint(f())",
     "A tank fills via pump P in 4 hours, but P drops to one third of its rate whenever the tank is more than two-thirds full. Drain D empties a full tank in 12 hours. Starting empty with both running, when is the tank full?",
     "A farmer must ferry a fox, a chicken, and a sack of grain. In this version the FOX eats the GRAIN if left alone with it, and nothing else conflicts. Boat holds farmer plus one. Minimum crossings and the sequence?",
-    "A dog runs at 12 km/h between two hikers walking toward each other at 4 and 5 km/h, starting 18 km apart, but the dog pauses 3 minutes at each hiker before turning. How far does the dog RUN before the hikers meet?",
+    "A dog runs at 12 km/h between two hikers walking toward each other at 4 and 5 km/h, starting 18 km apart, but the dog rests exactly 4 minutes at each hiker (walking along with them) before running again. How far does the dog RUN (not walk) before the hikers meet? Simulate each leg.",
+    "A ferryman must move a cat, a mouse, and a wheel of cheese across a river. Here the CAT eats the MOUSE if left together, the MOUSE eats the CHEESE if left together, AND the cat is scared of water so it must be the LAST item ferried. Boat carries one item. Is it solvable, and if so what is the minimum crossing sequence?",
+    "Predict the exact output: registry = []\nfor tag in ('a', 'b'):\n    def handler(events=[]):\n        events.append(tag)\n        return events\n    registry.append(handler)\nprint(registry[0]() is registry[1]())\nprint(registry[0]())\nprint(registry[1]())",
     "Take ROUTERBRAIN: swap the first and second halves, delete all vowels, then reverse the result. What string remains? Step by step.",
     "Predict the output and explain via the MRO: class P: v = 'p'\nclass Q(P): pass\nclass R(P): v = 'r'\nclass S(Q, R): pass\nprint(S.v)\nQ.v = 'q'\nprint(S.v)\ndel Q.v\nprint(S.v)",
     "Without running it, what does this print? nums = [10, 20, 30]\ngen = (n + 1 for n in nums)\nnums.remove(20)\nprint(list(gen))\nfns = [lambda m=n: m for n in nums]\nprint([f() for f in fns])\nprint([f() for f in [lambda: n for n in nums]])",
